@@ -27,6 +27,11 @@ def power(a, b):
     """aのb乗を計算する。"""
     return a ** b
 
+
+def abs_diff(a, b):
+    """2つの数の差の絶対値を返す。"""
+    return abs(a - b)
+
 def main():
     print("=== 簡単な計算機 ===")
     print("演算子: + - * /")

@@ -1,6 +1,6 @@
 import math
 import pytest
-from simple_calc import add, subtract, multiply, divide, sqrt, power
+from simple_calc import add, subtract, multiply, divide, sqrt, power, abs_diff
 
 
 def test_add():
@@ -52,3 +52,12 @@ def test_power():
     assert power(5, 0) == 1
     assert power(3, -1) == pytest.approx(1 / 3)
     assert power(4, 0.5) == pytest.approx(2.0)
+
+
+def test_abs_diff():
+    assert abs_diff(5, 3) == 2
+    assert abs_diff(3, 5) == 2
+    assert abs_diff(0, 0) == 0
+    assert abs_diff(-3, -7) == 4
+    assert abs_diff(-1, 1) == 2
+    assert abs_diff(1.5, 3.0) == pytest.approx(1.5)
