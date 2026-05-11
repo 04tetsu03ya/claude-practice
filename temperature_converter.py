@@ -34,3 +34,21 @@ def kelvin_to_celsius(k):
 def kelvin_to_fahrenheit(k):
     """ケルビンを華氏に変換する。"""
     return celsius_to_fahrenheit(kelvin_to_celsius(k))
+
+
+def is_normal_body_temperature(celsius):
+    """体温が正常範囲（36.0〜37.4°C）かどうかを判定する。
+
+    Returns:
+        str: "低体温" / "正常" / "微熱" / "発熱"
+    """
+    if celsius < -273.15:
+        raise ValueError("絶対零度（-273.15°C）未満の温度は存在しません")
+    if celsius < 36.0:
+        return "低体温"
+    elif celsius <= 37.4:
+        return "正常"
+    elif celsius <= 38.4:
+        return "微熱"
+    else:
+        return "発熱"

@@ -1,3 +1,6 @@
+import math
+
+
 def add(a, b):
     return a + b
 
@@ -11,6 +14,18 @@ def divide(a, b):
     if b == 0:
         raise ValueError("0で割ることはできません")
     return a / b
+
+
+def sqrt(a):
+    """平方根を計算する。"""
+    if a < 0:
+        raise ValueError("負の数の平方根は計算できません")
+    return math.sqrt(a)
+
+
+def power(a, b):
+    """aのb乗を計算する。"""
+    return a ** b
 
 def main():
     print("=== 簡単な計算機 ===")

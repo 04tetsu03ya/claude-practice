@@ -6,6 +6,7 @@ from temperature_converter import (
     fahrenheit_to_kelvin,
     kelvin_to_celsius,
     kelvin_to_fahrenheit,
+    is_normal_body_temperature,
 )
 
 
@@ -60,3 +61,19 @@ def test_kelvin_below_zero():
         kelvin_to_celsius(-1)
     with pytest.raises(ValueError, match="ケルビンは0未満"):
         kelvin_to_fahrenheit(-1)
+
+
+def test_is_normal_body_temperature():
+    assert is_normal_body_temperature(35.9) == "低体温"
+    assert is_normal_body_temperature(36.0) == "正常"
+    assert is_normal_body_temperature(36.5) == "正常"
+    assert is_normal_body_temperature(37.4) == "正常"
+    assert is_normal_body_temperature(37.5) == "微熱"
+    assert is_normal_body_temperature(38.4) == "微熱"
+    assert is_normal_body_temperature(38.5) == "発熱"
+    assert is_normal_body_temperature(40.0) == "発熱"
+
+
+def test_is_normal_body_temperature_below_absolute_zero():
+    with pytest.raises(ValueError, match="絶対零度"):
+        is_normal_body_temperature(-300)

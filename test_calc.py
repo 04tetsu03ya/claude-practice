@@ -1,5 +1,6 @@
+import math
 import pytest
-from simple_calc import add, subtract, multiply, divide
+from simple_calc import add, subtract, multiply, divide, sqrt, power
 
 
 def test_add():
@@ -32,3 +33,22 @@ def test_divide():
 def test_divide_by_zero():
     with pytest.raises(ValueError, match="0で割ることはできません"):
         divide(5, 0)
+
+
+def test_sqrt():
+    assert sqrt(4) == 2.0
+    assert sqrt(9) == 3.0
+    assert sqrt(0) == 0.0
+    assert sqrt(2) == pytest.approx(math.sqrt(2))
+
+
+def test_sqrt_negative():
+    with pytest.raises(ValueError, match="負の数の平方根は計算できません"):
+        sqrt(-1)
+
+
+def test_power():
+    assert power(2, 3) == 8
+    assert power(5, 0) == 1
+    assert power(3, -1) == pytest.approx(1 / 3)
+    assert power(4, 0.5) == pytest.approx(2.0)
