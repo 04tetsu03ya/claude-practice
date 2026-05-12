@@ -72,6 +72,22 @@ def standard_deviation(data):
     return math.sqrt(variance)
 
 
+def reverse_string(s):
+    """文字列を逆順にして返す。"""
+    return s[::-1]
+
+
+def count_vowels(s):
+    """文字列中の母音（a, e, i, o, u）の数を返す（大文字小文字を区別しない）。"""
+    return sum(1 for c in s.lower() if c in "aeiou")
+
+
+def is_palindrome(s):
+    """文字列が回文かどうかを判定する（大文字小文字・スペースを無視）。"""
+    normalized = s.lower().replace(" ", "")
+    return normalized == normalized[::-1]
+
+
 def main():
     print("=== 簡単な計算機 ===")
     print("演算子: + - * /")
