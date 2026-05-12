@@ -36,6 +36,40 @@ def kelvin_to_fahrenheit(k):
     return celsius_to_fahrenheit(kelvin_to_celsius(k))
 
 
+def calculate_bmi(weight_kg, height_m):
+    """体重（kg）と身長（m）からBMIを計算する。
+
+    Raises:
+        ValueError: 体重または身長が0以下の場合
+    """
+    if weight_kg <= 0:
+        raise ValueError("体重は0より大きい値を指定してください")
+    if height_m <= 0:
+        raise ValueError("身長は0より大きい値を指定してください")
+    return weight_kg / (height_m ** 2)
+
+
+def classify_bmi(bmi):
+    """BMI値から体格を分類する（WHO基準）。
+
+    Returns:
+        str: "低体重" / "普通体重" / "過体重" / "肥満"
+
+    Raises:
+        ValueError: BMIが0以下の場合
+    """
+    if bmi <= 0:
+        raise ValueError("BMIは0より大きい値を指定してください")
+    if bmi < 18.5:
+        return "低体重"
+    elif bmi < 25.0:
+        return "普通体重"
+    elif bmi < 30.0:
+        return "過体重"
+    else:
+        return "肥満"
+
+
 def is_normal_body_temperature(celsius):
     """体温が正常範囲（36.0〜37.4°C）かどうかを判定する。
 
