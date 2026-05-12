@@ -1,6 +1,6 @@
 import math
 import pytest
-from simple_calc import add, subtract, multiply, divide, sqrt, power, abs_diff, mean, median, mode, standard_deviation
+from simple_calc import add, subtract, multiply, divide, sqrt, power, abs_diff, mean, median, mode, standard_deviation, reverse_string, count_vowels, is_palindrome
 
 
 def test_add():
@@ -119,3 +119,30 @@ def test_standard_deviation():
 def test_standard_deviation_empty():
     with pytest.raises(ValueError, match="データが空です"):
         standard_deviation([])
+
+
+def test_reverse_string():
+    assert reverse_string("hello") == "olleh"
+    assert reverse_string("abc") == "cba"
+    assert reverse_string("a") == "a"
+    assert reverse_string("") == ""
+    assert reverse_string("12345") == "54321"
+
+
+def test_count_vowels():
+    assert count_vowels("hello") == 2
+    assert count_vowels("aeiou") == 5
+    assert count_vowels("AEIOU") == 5
+    assert count_vowels("bcdfg") == 0
+    assert count_vowels("") == 0
+    assert count_vowels("Python") == 1
+
+
+def test_is_palindrome():
+    assert is_palindrome("racecar") is True
+    assert is_palindrome("hello") is False
+    assert is_palindrome("") is True
+    assert is_palindrome("a") is True
+    assert is_palindrome("Racecar") is True
+    assert is_palindrome("A man a plan a canal Panama") is True
+    assert is_palindrome("Was it a car or a cat I saw") is True
