@@ -1,6 +1,6 @@
 import math
 import pytest
-from simple_calc import add, subtract, multiply, divide, sqrt, power, abs_diff
+from simple_calc import add, subtract, multiply, divide, sqrt, power, abs_diff, mean, median, mode, standard_deviation
 
 
 def test_add():
@@ -61,3 +61,61 @@ def test_abs_diff():
     assert abs_diff(-3, -7) == 4
     assert abs_diff(-1, 1) == 2
     assert abs_diff(1.5, 3.0) == pytest.approx(1.5)
+
+
+def test_mean():
+    assert mean([1, 2, 3, 4, 5]) == 3.0
+    assert mean([10]) == 10.0
+    assert mean([-2, 0, 2]) == 0.0
+    assert mean([1.5, 2.5]) == pytest.approx(2.0)
+
+
+def test_mean_empty():
+    with pytest.raises(ValueError, match="データが空です"):
+        mean([])
+
+
+def test_median_odd():
+    assert median([3, 1, 2]) == 2.0
+    assert median([5]) == 5.0
+    assert median([7, 3, 1, 5, 9]) == 5.0
+
+
+def test_median_even():
+    assert median([1, 2, 3, 4]) == 2.5
+    assert median([10, 20]) == 15.0
+    assert median([1, 3, 5, 7]) == 4.0
+
+
+def test_median_empty():
+    with pytest.raises(ValueError, match="データが空です"):
+        median([])
+
+
+def test_mode():
+    assert mode([1, 2, 2, 3]) == 2
+    assert mode([5]) == 5
+    assert mode([3, 1, 3, 2, 1, 3]) == 3
+
+
+def test_mode_tie():
+    # 最頻値が複数ある場合は最小値を返す
+    assert mode([1, 2, 1, 2]) == 1
+    assert mode([3, 4, 3, 4, 5]) == 3
+
+
+def test_mode_empty():
+    with pytest.raises(ValueError, match="データが空です"):
+        mode([])
+
+
+def test_standard_deviation():
+    assert standard_deviation([2, 4, 4, 4, 5, 5, 7, 9]) == pytest.approx(2.0)
+    assert standard_deviation([0]) == pytest.approx(0.0)
+    assert standard_deviation([1, 1, 1]) == pytest.approx(0.0)
+    assert standard_deviation([0, 10]) == pytest.approx(5.0)
+
+
+def test_standard_deviation_empty():
+    with pytest.raises(ValueError, match="データが空です"):
+        standard_deviation([])
