@@ -32,6 +32,46 @@ def abs_diff(a, b):
     """2つの数の差の絶対値を返す。"""
     return abs(a - b)
 
+
+def mean(data):
+    """データの平均値を計算する。"""
+    if not data:
+        raise ValueError("データが空です")
+    return sum(data) / len(data)
+
+
+def median(data):
+    """データの中央値を計算する。"""
+    if not data:
+        raise ValueError("データが空です")
+    sorted_data = sorted(data)
+    n = len(sorted_data)
+    mid = n // 2
+    if n % 2 == 0:
+        return (sorted_data[mid - 1] + sorted_data[mid]) / 2
+    return float(sorted_data[mid])
+
+
+def mode(data):
+    """データの最頻値を計算する。最頻値が複数ある場合は最小値を返す。"""
+    if not data:
+        raise ValueError("データが空です")
+    counts = {}
+    for x in data:
+        counts[x] = counts.get(x, 0) + 1
+    max_count = max(counts.values())
+    return min(k for k, v in counts.items() if v == max_count)
+
+
+def standard_deviation(data):
+    """データの母標準偏差を計算する。"""
+    if not data:
+        raise ValueError("データが空です")
+    avg = mean(data)
+    variance = sum((x - avg) ** 2 for x in data) / len(data)
+    return math.sqrt(variance)
+
+
 def main():
     print("=== 簡単な計算機 ===")
     print("演算子: + - * /")
