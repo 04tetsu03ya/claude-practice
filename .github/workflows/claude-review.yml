@@ -1,0 +1,97 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run code review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          REPO="${{ github.repository }}"
+
+          claude -p "Provide a code review for PR #${PR_NUMBER} in the GitHub repo ${REPO}. Use gh CLI for all GitHub operations. GH_TOKEN is set as an environment variable.
+
+          Follow these steps precisely:
+
+          1. Check eligibility: run 'gh pr view ${PR_NUMBER} --repo ${REPO} --json state,isDraft,title,comments'
+             Skip entirely (exit without posting) if: (a) state is not OPEN, (b) isDraft is true, (c) appears automated, (d) comments already contain 'Generated with Claude Code'.
+
+          2. Find CLAUDE.md files: get modified files with 'gh pr view ${PR_NUMBER} --repo ${REPO} --json files', then check for CLAUDE.md at the repo root and in each directory that contains a modified file. Use 'gh api repos/${REPO}/contents/CLAUDE.md' to check existence.
+
+          3. Read the contents of each CLAUDE.md found.
+
+          4. Get the PR diff: gh pr diff ${PR_NUMBER} --repo ${REPO}
+
+          5. Review the changes for each of the following, producing a list of issues:
+             a. CLAUDE.md compliance — does the new code violate any coding conventions in CLAUDE.md? (Note: CLAUDE.md is guidance for writing code; not all rules apply during review.)
+             b. Obvious bugs — large functional bugs only; ignore nitpicks and things a linter would catch.
+             c. Git history context — run 'gh api repos/${REPO}/commits?path=<file>' for modified files; identify bugs revealed by history.
+             d. Previous PR comments — run 'gh pr list --repo ${REPO} --state all --json number,files', check comments on previous PRs that touched the same files.
+             e. Code comment compliance — do the changes respect guidance in existing code comments and docstrings?
+
+          6. For each issue found, score confidence from 0 to 100:
+             0 = false positive / pre-existing issue
+             25 = uncertain; may be a false positive; stylistic issue not in CLAUDE.md
+             50 = moderate; real but minor or infrequent
+             75 = high; verified real issue or directly mentioned in CLAUDE.md
+             100 = certain; definitely real and frequent
+
+          7. Discard all issues with a score below 80.
+
+          8. Re-check eligibility (step 1) to confirm the PR is still open and unreviewed.
+
+          9. Post a comment with 'gh pr comment ${PR_NUMBER} --repo ${REPO} --body \"<comment>\"'.
+
+          If issues remain after filtering, use this format (example for 2 issues):
+
+          ### Code review
+
+          Found 2 issues:
+
+          1. <brief description> (CLAUDE.md says \"<exact quote>\")
+
+          https://github.com/${REPO}/blob/<full-sha>/<file>#L<start>-L<end>
+
+          2. <brief description> (bug due to <explanation>)
+
+          https://github.com/${REPO}/blob/<full-sha>/<file>#L<start>-L<end>
+
+          🤖 Generated with [Claude Code](https://claude.ai/code)
+
+          <sub>- If this code review was useful, please react with 👍. Otherwise, react with 👎.</sub>
+
+          If no issues remain after filtering, use this format:
+
+          ### Code review
+
+          No issues found. Checked for bugs and CLAUDE.md compliance.
+
+          🤖 Generated with [Claude Code](https://claude.ai/code)
+
+          Important notes:
+          - Links must use the full git SHA (not HEAD or branch name)
+          - Provide at least 1 line of context before and after the flagged line in the link range
+          - Do not flag pre-existing issues on lines not modified in this PR
+          - Do not attempt to build or typecheck the code" \
+          --allowedTools "Bash"
