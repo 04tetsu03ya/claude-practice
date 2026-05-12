@@ -7,6 +7,8 @@ from temperature_converter import (
     kelvin_to_celsius,
     kelvin_to_fahrenheit,
     is_normal_body_temperature,
+    calculate_bmi,
+    classify_bmi,
 )
 
 
@@ -77,3 +79,40 @@ def test_is_normal_body_temperature():
 def test_is_normal_body_temperature_below_absolute_zero():
     with pytest.raises(ValueError, match="絶対零度"):
         is_normal_body_temperature(-300)
+
+
+def test_calculate_bmi():
+    assert calculate_bmi(70, 1.75) == pytest.approx(22.857, rel=1e-3)
+    assert calculate_bmi(50, 1.60) == pytest.approx(19.531, rel=1e-3)
+    assert calculate_bmi(90, 1.70) == pytest.approx(31.141, rel=1e-3)
+
+
+def test_calculate_bmi_invalid():
+    with pytest.raises(ValueError, match="体重"):
+        calculate_bmi(0, 1.75)
+    with pytest.raises(ValueError, match="体重"):
+        calculate_bmi(-10, 1.75)
+    with pytest.raises(ValueError, match="身長"):
+        calculate_bmi(70, 0)
+    with pytest.raises(ValueError, match="身長"):
+        calculate_bmi(70, -1.75)
+
+
+def test_classify_bmi():
+    assert classify_bmi(16.0) == "低体重"
+    assert classify_bmi(18.4) == "低体重"
+    assert classify_bmi(18.5) == "普通体重"
+    assert classify_bmi(22.0) == "普通体重"
+    assert classify_bmi(24.9) == "普通体重"
+    assert classify_bmi(25.0) == "過体重"
+    assert classify_bmi(27.5) == "過体重"
+    assert classify_bmi(29.9) == "過体重"
+    assert classify_bmi(30.0) == "肥満"
+    assert classify_bmi(35.0) == "肥満"
+
+
+def test_classify_bmi_invalid():
+    with pytest.raises(ValueError, match="BMI"):
+        classify_bmi(0)
+    with pytest.raises(ValueError, match="BMI"):
+        classify_bmi(-5)
